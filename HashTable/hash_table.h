@@ -26,12 +26,16 @@ typedef struct HashTable {
 // and returns the pointer
 HashTable* make_hash_table(const size_t capacity);
 
+// make_kv_pair function allocates the memory for the KV struct
+// and returns the pointer
+static KV* make_kv_pair(char *key, int value);
+
 // add function adds the key-value pair to the HashTable
 // if the key already exists, the value will be overwritten
-void add(const char *key, const int value);
+void add(HashTable *ht, char *key, int value);
 
 // hash function generates the hash code for the provided key
-static uint64_t hash(const char *key);
+static uint32_t hash(const char *key);
 
 // logger function logs the message with the tag to the stderr
 // if _exit flag is set to true, it exits with code 1

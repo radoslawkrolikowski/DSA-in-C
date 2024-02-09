@@ -1,4 +1,5 @@
 #include "hash_table.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,13 +15,52 @@ HashTable* make_hash_table(const size_t capacity) {
     if (pArray == NULL)
         logger("ERROR", "allocate memory error", true);
 
-    memset(pArray, NULL, capacity);
-    pHashTable->data = pArray;
+    for (int i = 0; i < capacity; ++i)
+        *(pArray + i) = NULL;
 
+    pHashTable->data = pArray;
     pHashTable->capacity = capacity;
     pHashTable->size = 0;
 
     return pHashTable;
+}
+
+static KV* make_kv_pair(char *key, int value) {
+    KV *pKV = malloc(sizeof(KV));
+    if (pKV == NULL)
+        logger("ERROR", "allocate memory error", true);
+
+    pKV->key = key;
+    pKV->value = value;
+    FLAG flag = OCCUPIED;
+    pKV->flag = flag;
+
+    return pKV;
+}
+
+// djb2 hash function
+static uint32_t hash(const char *key) {
+    uint32_t hash = 5381;
+    int c;
+
+    while ((c = *key++))
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
+
+void add(HashTable *ht, char *key, int value) {
+    if (ht->size == ht->capacity)
+        exit(1); // TODO: scale the table up
+
+    KV *pKV = make_kv_pair(key, value);
+
+    uint32_t hash_code = hash(key) % ht->capacity;
+
+    // TODO: check and handle collisions
+
+    *(ht->data + hash_code) = pKV;
+    ht->size++;
 }
 
 void logger(const char *tag, const char *message, bool _exit) {
