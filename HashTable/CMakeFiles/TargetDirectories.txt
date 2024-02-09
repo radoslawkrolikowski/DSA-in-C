@@ -1,4 +1,0 @@
-/home/radek/Documents/Coding/DSA-in-C/HashTable/CMakeFiles/hash_table_tests.dir
-/home/radek/Documents/Coding/DSA-in-C/HashTable/CMakeFiles/test.dir
-/home/radek/Documents/Coding/DSA-in-C/HashTable/CMakeFiles/edit_cache.dir
-/home/radek/Documents/Coding/DSA-in-C/HashTable/CMakeFiles/rebuild_cache.dir
