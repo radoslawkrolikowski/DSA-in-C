@@ -30,9 +30,15 @@ HashTable* make_hash_table(const size_t capacity);
 // and returns the pointer
 static KV* make_kv_pair(char *key, int value);
 
-// add function adds the key-value pair to the HashTable
-// if the key already exists, the value will be overwritten
+// add function adds the key-value pair to the HashTable.
+// If the key already exists, the value will be overwritten.
+// In case of a hash_code collision, it uses linear probing
+// to determine the new hash_code.
+// Function releases the memory for the DELETED KV items
 void add(HashTable *ht, char *key, int value);
+
+// remove_kv function adds the DELETED flag to the KV item
+void remove_kv(HashTable *ht, char *key);
 
 // hash function generates the hash code for the provided key
 static uint32_t hash(const char *key);

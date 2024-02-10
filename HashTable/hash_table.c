@@ -56,11 +56,45 @@ void add(HashTable *ht, char *key, int value) {
     KV *pKV = make_kv_pair(key, value);
 
     uint32_t hash_code = hash(key) % ht->capacity;
+    KV *pInsKV = *(ht->data + hash_code);
 
-    // TODO: check and handle collisions
+    if (pInsKV != NULL && strcmp(pInsKV->key, key) == 0) {
+        pInsKV->value = value;
+        return;
+    }
+
+    while (pInsKV != NULL && pInsKV->flag == OCCUPIED) {
+        hash_code++;
+        if (hash_code == ht->capacity)
+            hash_code = 0;
+        pInsKV = *(ht->data + hash_code);
+    }
+
+    if (pInsKV != NULL && pInsKV->flag == DELETED)
+        free(pInsKV);
 
     *(ht->data + hash_code) = pKV;
     ht->size++;
+}
+
+void remove_kv(HashTable *ht, char *key) {
+    // TODO: if size < 1/4 of capacity -> scale down
+
+    uint32_t hash_code = hash(key) % ht->capacity;
+    KV *pInsKV = *(ht->data + hash_code);
+
+    while (pInsKV != NULL) {
+        if (strcmp(pInsKV->key, key) == 0) {
+            pInsKV->flag = DELETED;
+            ht->size--;
+            return;
+        }
+
+        hash_code++;
+        if (hash_code == ht->capacity)
+            hash_code = 0;
+        pInsKV = *(ht->data + hash_code);
+    }
 }
 
 void logger(const char *tag, const char *message, bool _exit) {

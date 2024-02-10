@@ -1,0 +1,21 @@
+Start testing: Feb 10 15:20 GMT
+----------------------------------------------------------
+1/1 Testing: HashTableTests
+1/1 Test: HashTableTests
+Command: "/home/radek/Documents/Coding/DSA-in-C/HashTable/hash_table_tests"
+Directory: /home/radek/Documents/Coding/DSA-in-C/HashTable
+"HashTableTests" start time: Feb 10 15:20 GMT
+Output:
+----------------------------------------------------------
+-- Testing test_make_empty_hash_table ... success
+-- Testing test_add_kv_pair ... success
+Total tests passed: 2
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"HashTableTests" end time: Feb 10 15:20 GMT
+"HashTableTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 10 15:20 GMT

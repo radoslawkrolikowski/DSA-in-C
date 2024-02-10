@@ -54,6 +54,31 @@ void test_add_kv_pair() {
     assert(*(ht->data + 8) == NULL);
     assert(ht->size == 1);
 
+    add(ht, "England", 7); // update the value for key 'England'
+    assert(*(ht->data + 4) != NULL);
+    assert(strcmp((*(ht->data + 4))->key, "England") == 0);
+    assert((*(ht->data + 4))->value == 7);
+
+    add(ht, "France", 3);
+    assert(*(ht->data + 2) != NULL);
+    assert(strcmp((*(ht->data + 2))->key, "France") == 0);
+
+    add(ht, "Italy", 4); // collision with 'France' at index 2
+    assert(*(ht->data + 3) != NULL);
+    assert(strcmp((*(ht->data + 3))->key, "Italy") == 0);
+
+    add(ht, "Greece", 6); // collisions at index: 2,3,4
+    assert(*(ht->data + 5) != NULL);
+    assert(strcmp((*(ht->data + 5))->key, "Greece") == 0);
+
+    add(ht, "Sweden", 1);
+    assert(*(ht->data + 9) != NULL);
+    assert(strcmp((*(ht->data + 9))->key, "Sweden") == 0);
+
+    add(ht, "Iceland", 2); // collision at index 9
+    assert(*(ht->data) != NULL);
+    assert(strcmp((*(ht->data))->key, "Iceland") == 0);
+
     /*for (int i = 0; i < ht->capacity; i++) {
         if (*(ht->data + i) == NULL)
             fprintf(stderr, "NULL\n");
@@ -62,7 +87,24 @@ void test_add_kv_pair() {
             int v = (*(ht->data + i))->value;
             fprintf(stderr, "%s: %d\n", k, v);
         }
-    }*/
+    } */
+
+    TestEnd();
+}
+
+void test_remove_kv() {
+    TestStart("test_remove_kv");
+
+    HashTable *ht = make_hash_table(10);
+
+    add(ht, "France", 3);
+    assert(*(ht->data + 2) != NULL);
+    add(ht, "Italy", 4); // collision with 'France' at index 2
+    assert(*(ht->data + 3) != NULL);
+
+    remove_kv(ht, "Italy");
+    assert((*(ht->data + 3))->flag == DELETED);
+    assert(ht->size == 1);
 
     TestEnd();
 }
@@ -74,6 +116,7 @@ int main(void) {
 
     test_make_empty_hash_table();
     test_add_kv_pair();
+    test_remove_kv();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;
