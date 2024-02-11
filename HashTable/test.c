@@ -79,16 +79,6 @@ void test_add_kv_pair() {
     assert(*(ht->data) != NULL);
     assert(strcmp((*(ht->data))->key, "Iceland") == 0);
 
-    /*for (int i = 0; i < ht->capacity; i++) {
-        if (*(ht->data + i) == NULL)
-            fprintf(stderr, "NULL\n");
-        else {
-            char *k = (*(ht->data + i))->key;
-            int v = (*(ht->data + i))->value;
-            fprintf(stderr, "%s: %d\n", k, v);
-        }
-    } */
-
     TestEnd();
 }
 
@@ -109,6 +99,56 @@ void test_remove_kv() {
     TestEnd();
 }
 
+void test_exists() {
+    TestStart("test_exists");
+
+    HashTable *ht = make_hash_table(10);
+
+    add(ht, "France", 3);
+    add(ht, "Italy", 4); // collision with 'France' at index 2
+    assert(exists(ht, "Italy") == true);
+    assert(exists(ht, "Poland") == false);
+
+    TestEnd();
+}
+
+void test_get_value() {
+    TestStart("test_get_value");
+
+    HashTable *ht = make_hash_table(10);
+
+    add(ht, "France", 3);
+    add(ht, "Italy", 4); // collision with 'France' at index 2
+    int result = -1;
+    assert(get_value(ht, "France", &result) == 0);
+    assert(result == 3);
+    assert(get_value(ht, "Italy", &result) == 0);
+    assert(result == 4);
+    assert(get_value(ht, "Poland", &result) == -1);
+
+    TestEnd();
+}
+
+void test_resize() {
+    TestStart("test_resize");
+
+    HashTable *ht = make_hash_table(4);
+    add(ht, "United States", 1);
+    add(ht, "Canada", 2);
+    add(ht, "Australia", 3);
+    add(ht, "New Zeland", 4);
+    add(ht, "South Africa", 5); // need to resize before insert
+    assert(ht->capacity == 8);
+
+    assert(*(ht->data + 2) != NULL);
+    assert(strcmp((*(ht->data + 2))->key, "United States") == 0);
+
+    assert(*(ht->data + 6) != NULL);
+    assert(strcmp((*(ht->data + 6))->key, "Canada") == 0);
+
+    TestEnd();
+}
+
 int main(void) {
     num_tests = 0;
     tests_passed = 0;
@@ -117,6 +157,9 @@ int main(void) {
     test_make_empty_hash_table();
     test_add_kv_pair();
     test_remove_kv();
+    test_exists();
+    test_get_value();
+    test_resize();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;

@@ -51,7 +51,7 @@ static uint32_t hash(const char *key) {
 
 void add(HashTable *ht, char *key, int value) {
     if (ht->size == ht->capacity)
-        exit(1); // TODO: scale the table up
+        resize(ht, 2.0f);
 
     KV *pKV = make_kv_pair(key, value);
 
@@ -78,14 +78,15 @@ void add(HashTable *ht, char *key, int value) {
 }
 
 void remove_kv(HashTable *ht, char *key) {
-    // TODO: if size < 1/4 of capacity -> scale down
+    if (ht->capacity > 16 && (float)ht->size < 0.25 * ht->capacity)
+        resize(ht, 0.5f);
 
     uint32_t hash_code = hash(key) % ht->capacity;
-    KV *pInsKV = *(ht->data + hash_code);
+    KV *pKV = *(ht->data + hash_code);
 
-    while (pInsKV != NULL) {
-        if (strcmp(pInsKV->key, key) == 0) {
-            pInsKV->flag = DELETED;
+    while (pKV != NULL) {
+        if (strcmp(pKV->key, key) == 0) {
+            pKV->flag = DELETED;
             ht->size--;
             return;
         }
@@ -93,15 +94,92 @@ void remove_kv(HashTable *ht, char *key) {
         hash_code++;
         if (hash_code == ht->capacity)
             hash_code = 0;
-        pInsKV = *(ht->data + hash_code);
+        pKV = *(ht->data + hash_code);
     }
+}
+
+bool exists(HashTable *ht, char *key) {
+    uint32_t hash_code = hash(key) % ht->capacity;
+    KV *pKV = *(ht->data + hash_code);
+
+    while (pKV != NULL) {
+        if (strcmp(pKV->key, key) == 0) {
+            return true;
+        }
+
+        hash_code++;
+        if (hash_code == ht->capacity)
+            hash_code = 0;
+        pKV = *(ht->data + hash_code);
+    }
+
+    return false;
+}
+
+int get_value(HashTable *ht, char *key, int *value) {
+    uint32_t hash_code = hash(key) % ht->capacity;
+    KV *pKV = *(ht->data + hash_code);
+
+    while (pKV != NULL) {
+        if (strcmp(pKV->key, key) == 0) {
+            *value = pKV->value;
+            return 0;
+        }
+
+        hash_code++;
+        if (hash_code == ht->capacity)
+            hash_code = 0;
+        pKV = *(ht->data + hash_code);
+    }
+
+    return -1;
+}
+
+static void resize(HashTable *ht, float factor) {
+    size_t new_capacity = (size_t)(ht->capacity * factor);
+
+    KV **pNewArray = malloc(new_capacity * sizeof(KV*));
+    if (pNewArray == NULL)
+        logger("ERROR", "allocate memory error", true);
+
+    for (int i = 0; i < new_capacity; ++i) {
+        *(pNewArray + i) = NULL;
+    }
+
+    int new_size = 0;
+
+    for (int i = 0; i < ht->capacity; ++i) {
+        KV *pKV = *(ht->data + i);
+
+        if (pKV != NULL && pKV->flag == OCCUPIED) {
+            uint32_t hash_code = hash(pKV->key) % new_capacity;
+            KV *pInsKV = *(pNewArray + hash_code);
+
+            while (pInsKV != NULL && pInsKV->flag == OCCUPIED) {
+                hash_code++;
+
+                if (hash_code == new_capacity)
+                    hash_code = 0;
+
+                pInsKV = *(pNewArray + hash_code);
+            }
+
+            *(pNewArray + hash_code) = pKV;
+            new_size++;
+        }
+    }
+
+    free(ht->data);
+    ht->capacity = new_capacity;
+    ht->data = pNewArray;
+    ht->size = new_size;
 }
 
 void logger(const char *tag, const char *message, bool _exit) {
     time_t now = time(0);
     char buff[50];
     strftime(buff, 50, "%Y-%m-%d %H:%M:%S", localtime(&now));
-    fprintf(stderr, "%s [%s] %s", buff, tag, message);
+    fprintf(stderr, "%s [%s] %s\n", buff, tag, message);
     if (_exit)
         exit(1);
 }

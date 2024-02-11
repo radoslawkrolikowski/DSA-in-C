@@ -40,6 +40,20 @@ void add(HashTable *ht, char *key, int value);
 // remove_kv function adds the DELETED flag to the KV item
 void remove_kv(HashTable *ht, char *key);
 
+// exists function returns true if the given key exists,
+// otherwise it returns false
+bool exists(HashTable *ht, char *key);
+
+// get_value function writes the value for the provided key into
+// the 'value' pointer variable and returns 0. If the key does
+// not exists it returns -1
+int get_value(HashTable *ht, char *key, int *value);
+
+// resize function allocates the memory for the new hash table of
+// the size of factor * old size, then it calculates new hash codes
+// and inserts all KV pairs into the new table.
+static void resize(HashTable *ht, float factor);
+
 // hash function generates the hash code for the provided key
 static uint32_t hash(const char *key);
 
