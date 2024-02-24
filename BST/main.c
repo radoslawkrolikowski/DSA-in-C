@@ -16,5 +16,7 @@ int main(void) {
     print_values(root);
     printf("\n");
 
+    delete_tree(root);
+
     return 0;
 }

@@ -46,6 +46,55 @@ void print_values(BSTNode *node) {
     print_values(node->right);
 }
 
+void delete_tree(BSTNode *node) {
+    if (node == NULL)
+        return;
+
+    delete_tree(node->left);
+    delete_tree(node->right);
+
+    free(node);
+}
+
+bool is_in_tree(BSTNode *node, int value) {
+    if (node == NULL)
+        return false;
+
+    if (value == node->data)
+        return true;
+    else if (value < node->data)
+        return is_in_tree(node->left, value);
+    else
+        return is_in_tree(node->right, value);
+}
+
+static int max_value(int x, int y) {
+    if (x >= y)
+        return x;
+    return y;
+}
+
+int get_depth(BSTNode *node) {
+   if (node == NULL)
+       return 0;
+
+   return 1 + max_value(get_depth(node->left), get_depth(node->right));
+}
+
+int get_min(BSTNode *node) {
+    if (node->left)
+        return get_min(node->left);
+    else
+        return node->data;
+}
+
+int get_max(BSTNode *node) {
+    if (node->right)
+        return get_max(node->right);
+    else
+        return node->data;
+}
+
 void logger(const char *tag, const char *message, bool _exit) {
     time_t now = time(0);
     char buff[50];

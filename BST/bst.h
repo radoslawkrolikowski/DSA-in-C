@@ -24,6 +24,27 @@ int get_node_count(BSTNode *node);
 // print_values function prints the tree values in-order
 void print_values(BSTNode *node);
 
+// delete_tree releases the memory of all the tree/subtree nodes
+void delete_tree(BSTNode *node);
+
+// is_in_tree function returns true if a given value exists in the tree,
+// otherwise it returns false
+bool is_in_tree(BSTNode *node, int value);
+
+// max_value function returns maximum of (x,y)
+static int max_value(int x, int y);
+
+// get_depth function returns the depth of the tree/subtree
+int get_depth(BSTNode *node);
+
+// get_min function returns the minimum value in the tree/subtree
+// If tree is empty it returns 0.
+int get_min(BSTNode *node);
+
+// get_max function returns the maximum value in the tree/subtree
+// If tree is empty it returns 0.
+int get_max(BSTNode *node);
+
 // logger function logs the tag and message to the stderr. If _exit flag
 // is set to true it exits with code 1.
 void logger(const char *tag, const char *message, bool _exit);
