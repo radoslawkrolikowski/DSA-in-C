@@ -45,6 +45,14 @@ int get_min(BSTNode *node);
 // If tree is empty it returns 0.
 int get_max(BSTNode *node);
 
+// is_binary_search_tree function returns true if the tree is a valid
+// binary search tree, otherwise it returns false.
+bool is_binary_search_tree(BSTNode *node);
+
+// __is_binary_search_tree is a helper function that performs the in-order
+// traversal and updates the last_value variable
+static bool __is_binary_search_tree(BSTNode *node, int *last_value);
+
 // logger function logs the tag and message to the stderr. If _exit flag
 // is set to true it exits with code 1.
 void logger(const char *tag, const char *message, bool _exit);

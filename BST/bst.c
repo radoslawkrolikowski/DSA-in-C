@@ -1,4 +1,5 @@
 #include "bst.h"
+#include <limits.h>
 #include <time.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -93,6 +94,30 @@ int get_max(BSTNode *node) {
         return get_max(node->right);
     else
         return node->data;
+}
+
+bool is_binary_search_tree(BSTNode *node) {
+    int last_value = INT_MIN;
+    return __is_binary_search_tree(node, &last_value);
+}
+
+static bool __is_binary_search_tree(BSTNode *node, int *last_value) {
+    if (node == NULL)
+        return true;
+
+    if (!__is_binary_search_tree(node->left, last_value))
+        return false;
+
+    if (node->data <= *last_value) {
+        return false;
+    }
+
+    *last_value = node->data;
+
+    if (!__is_binary_search_tree(node->right, last_value))
+        return false;
+
+    return  true;
 }
 
 void logger(const char *tag, const char *message, bool _exit) {

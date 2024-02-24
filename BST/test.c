@@ -124,6 +124,28 @@ void test_get_max() {
     TestEnd();
 }
 
+void test_is_binary_search_tree() {
+    TestStart("test_is_binary_search_tree");
+
+    BSTNode *root = make_node(5);
+    insert(&root, 3);
+    insert(&root, 4);
+    insert(&root, 1);
+    insert(&root, 6);
+    insert(&root, 9);
+    insert(&root, 8);
+    assert(is_binary_search_tree(root) == true);
+
+    root->data = 7;
+    assert(is_binary_search_tree(root) == false);
+
+    root->data = 5;
+    root->left->data = 10;
+    assert(is_binary_search_tree(root) == false);
+
+    TestEnd();
+}
+
 int main(void) {
     num_tests = 0;
     tests_passed = 0;
@@ -135,6 +157,7 @@ int main(void) {
     test_get_depth();
     test_get_min();
     test_get_max();
+    test_is_binary_search_tree();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;
