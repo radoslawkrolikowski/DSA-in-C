@@ -146,6 +146,41 @@ void test_is_binary_search_tree() {
     TestEnd();
 }
 
+void test_delete_value() {
+    TestStart("test_delete_value");
+
+    BSTNode *root = make_node(5);
+    root = delete_value(root, 5);
+    assert(root == NULL);
+
+    root = make_node(5);
+    insert(&root, 3);
+    insert(&root, 4);
+    insert(&root, 1);
+    insert(&root, 8);
+    insert(&root, 7);
+    insert(&root, 9);
+    insert(&root, 6);
+    insert(&root, 10);
+
+    root = delete_value(root, 1);
+    assert(root->data == 5);
+    assert(get_min(root) == 3);
+
+    root = delete_value(root, 3);
+    assert(root->left->data == 4);
+
+    root = delete_value(root, 8);
+    assert(root->right->data == 9);
+
+    root = delete_value(root, 22);
+    assert(root->data == 5);
+
+    assert(is_binary_search_tree(root) == true);
+
+    TestEnd();
+}
+
 int main(void) {
     num_tests = 0;
     tests_passed = 0;
@@ -158,6 +193,7 @@ int main(void) {
     test_get_min();
     test_get_max();
     test_is_binary_search_tree();
+    test_delete_value();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;

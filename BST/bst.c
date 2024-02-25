@@ -120,6 +120,35 @@ static bool __is_binary_search_tree(BSTNode *node, int *last_value) {
     return  true;
 }
 
+BSTNode* delete_value(BSTNode *node, int value) {
+    if (node == NULL) {
+        return node;
+    }
+
+    if (value < node->data)
+        node->left = delete_value(node->left, value);
+    else if (value > node->data) {
+        node->right = delete_value(node->right, value);
+    }
+    else {
+        if (!node->left && !node->right) {
+            free(node);
+            return NULL;
+        } else if (!node->left != !node->right) { // logical XOR
+            BSTNode *temp = node->left ? node->left : node->right;
+            free(node);
+            return temp;
+        } else {
+            int minVal = get_min(node->right);
+            node->data = minVal;
+            node->right = delete_value(node->right, minVal);
+            return node;
+        }
+    }
+
+    return node;
+}
+
 void logger(const char *tag, const char *message, bool _exit) {
     time_t now = time(0);
     char buff[50];

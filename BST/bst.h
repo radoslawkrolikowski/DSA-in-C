@@ -53,6 +53,9 @@ bool is_binary_search_tree(BSTNode *node);
 // traversal and updates the last_value variable
 static bool __is_binary_search_tree(BSTNode *node, int *last_value);
 
+// delete_value function deletes the node with the given value.
+BSTNode* delete_value(BSTNode *node, int value);
+
 // logger function logs the tag and message to the stderr. If _exit flag
 // is set to true it exits with code 1.
 void logger(const char *tag, const char *message, bool _exit);
