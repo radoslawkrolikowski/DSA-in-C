@@ -149,6 +149,29 @@ BSTNode* delete_value(BSTNode *node, int value) {
     return node;
 }
 
+int get_successor(BSTNode *node, int value) {
+    if (node == NULL)
+        return -1;
+
+    BSTNode *successor = NULL;
+
+    while (node) {
+        if (value < node->data) {
+            successor = node;
+            node = node->left;
+        } else if (value > node->data)
+            node = node->right;
+        else {
+            if (node->right)
+                return get_min(node->right);
+
+            return successor ? successor->data : -1;
+        }
+    }
+
+    return -1;
+}
+
 void logger(const char *tag, const char *message, bool _exit) {
     time_t now = time(0);
     char buff[50];

@@ -56,6 +56,10 @@ static bool __is_binary_search_tree(BSTNode *node, int *last_value);
 // delete_value function deletes the node with the given value.
 BSTNode* delete_value(BSTNode *node, int value);
 
+// get_successor returns the next heighest value after given value
+// when traversing in-order. If there is no successor it retunrs -1.
+int get_successor(BSTNode *node, int value);
+
 // logger function logs the tag and message to the stderr. If _exit flag
 // is set to true it exits with code 1.
 void logger(const char *tag, const char *message, bool _exit);

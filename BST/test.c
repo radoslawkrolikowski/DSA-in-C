@@ -181,6 +181,28 @@ void test_delete_value() {
     TestEnd();
 }
 
+void test_get_successor() {
+    TestStart("test_get_successor");
+
+    BSTNode *root = make_node(5);
+    insert(&root, 3);
+    insert(&root, 4);
+    insert(&root, 1);
+    insert(&root, 8);
+    insert(&root, 7);
+    insert(&root, 9);
+    insert(&root, 6);
+    insert(&root, 10);
+    assert(get_successor(root, 1) == 3);
+    assert(get_successor(root, 3) == 4);
+    assert(get_successor(root, 5) == 6);
+    assert(get_successor(root, 6) == 7);
+    assert(get_successor(root, 10) == -1);
+    assert(get_successor(root, 22) == -1);
+
+    TestEnd();
+}
+
 int main(void) {
     num_tests = 0;
     tests_passed = 0;
@@ -194,6 +216,7 @@ int main(void) {
     test_get_max();
     test_is_binary_search_tree();
     test_delete_value();
+    test_get_successor();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;
