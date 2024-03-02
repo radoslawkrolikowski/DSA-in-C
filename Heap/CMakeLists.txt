@@ -2,14 +2,6 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(Heap C)
 
-set(SOURCE_FILES
-    main.c
-    heap.c
-)
-
-add_executable(heap ${SOURCE_FILES})
-target_include_directories(heap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 set(TEST_SOURCE_FILES
     test.c
     heap.c

@@ -29,8 +29,13 @@ void sift_up(Heap *heap, int index);
 void insert(Heap *heap, int value);
 
 // extract_max function returns and removes the maximum value.
+// If heap is empty it returns -1. The parameter scale_down specifies
+// whether the array can be scaled down (resized) or not.
+int extract_max(Heap *heap, bool scale_down);
+
+// remove function removes and returns the value at provided index.
 // If heap is empty it returns -1.
-int extract_max(Heap *heap);
+int remove_value(Heap *heap, int index);
 
 // is_empty function returns true if heap is empty, otherwise
 // is returns false.
@@ -54,6 +59,9 @@ int get_left_child_index(Heap *heap, int index);
 // get_right_child_index function Vreturns the index of the right child node
 // if exists, otherwise it returns -1.
 int get_right_child_index(Heap *heap, int index);
+
+// heap_sort takes an unsorted array and turns it into a sorted array in place.
+void heap_sort(int *array, size_t size);
 
 // logger function logs the tag and message to stderr. If _exit flag
 // is set to true it exists with code 1.

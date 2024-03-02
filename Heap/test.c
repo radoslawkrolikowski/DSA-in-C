@@ -157,10 +157,10 @@ void test_resize_array() {
     insert(heap, 9);
     assert(heap->capacity == 8);
     assert(get_max(heap) == 9);
-    extract_max(heap);
-    extract_max(heap);
-    extract_max(heap);
-    extract_max(heap);
+    extract_max(heap, true);
+    extract_max(heap, true);
+    extract_max(heap, true);
+    extract_max(heap, true);
     assert(heap->capacity == 4);
 
     TestEnd();
@@ -178,10 +178,56 @@ void test_extract_max() {
         *(array + i) = init_array[i];
 
     Heap *heap = build_heap(array, capacity, 9);
-    assert(extract_max(heap) == 10);
+    assert(extract_max(heap, true) == 10);
     assert(heap->size == 8);
-    assert(extract_max(heap) == 8);
+    assert(extract_max(heap, true) == 8);
     assert(heap->size == 7);
+
+    TestEnd();
+}
+
+void test_remove() {
+    TestStart("test_remove");
+
+    size_t capacity = 16;
+    int *array = malloc(capacity * sizeof(int));
+    assert(array != NULL);
+
+    int init_array[9] = {2,5,1,3,4,7,8,10,6};
+    for (int i = 0; i < 9; ++i)
+        *(array + i) = init_array[i];
+
+    Heap *heap = build_heap(array, capacity, 9);
+    assert(remove_value(heap, 1) == 6);
+    assert(heap->size == 8);
+
+    int result_array[8] = {10,5,8,3,4,7,1,2};
+
+    for (int i = 0; i < 8; i++) {
+        assert(*(heap->array + i) == result_array[i]);
+    }
+
+    TestEnd();
+}
+
+void test_heap_sort() {
+    TestStart("test_heap_sort");
+
+    size_t capacity = 16;
+    int *array = malloc(capacity * sizeof(int));
+    assert(array != NULL);
+
+    int init_array[9] = {2,5,1,3,4,7,8,10,6};
+    for (int i = 0; i < 9; ++i)
+        *(array + i) = init_array[i];
+
+    heap_sort(array, 9);
+
+    int result_array[9] = {1,2,3,4,5,6,7,8,10};
+
+    for (int i = 0; i < 9; i++) {
+        assert(*(array + i) == result_array[i]);
+    }
 
     TestEnd();
 }
@@ -200,6 +246,8 @@ int main(void) {
     test_insert();
     test_resize_array();
     test_extract_max();
+    test_remove();
+    test_heap_sort();
 
     printf("Total tests passed: %d\n", tests_passed);
     done = 1;

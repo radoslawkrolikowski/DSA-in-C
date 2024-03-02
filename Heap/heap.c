@@ -111,7 +111,7 @@ Heap* build_heap(int *array, size_t capacity, size_t size) {
     return pHeap;
 }
 
-int extract_max(Heap *heap) {
+int extract_max(Heap *heap, bool scale_down) {
     if (heap->size == 0)
         return -1;
 
@@ -119,6 +119,31 @@ int extract_max(Heap *heap) {
     *(heap->array) ^= *(heap->array + heap->size-1);
     *(heap->array + heap->size-1) ^= *(heap->array);
     *(heap->array) ^= *(heap->array + heap->size-1);
+
+    heap->size--;
+
+    if (scale_down & (heap->size < heap->capacity / 4)) {
+        int *pArray = realloc(heap->array, heap->capacity / 2);
+        if (pArray == NULL)
+            logger("[ERROR]", "could not reallocate the heap array", true);
+
+        heap->array = pArray;
+        heap->capacity = heap->capacity / 2;
+    }
+
+    sift_down(heap, 0);
+
+    return *(heap->array + heap->size);
+}
+
+int remove_value(Heap *heap, int index) {
+    if (heap->size == 0 || index < 0 || index >= heap->size)
+        return -1;
+
+    // swap element at index position and last element (XOR swap algorithm)
+    *(heap->array + index) ^= *(heap->array + heap->size-1);
+    *(heap->array + heap->size-1) ^= *(heap->array + index);
+    *(heap->array + index) ^= *(heap->array + heap->size-1);
 
     heap->size--;
 
@@ -131,7 +156,7 @@ int extract_max(Heap *heap) {
         heap->capacity = heap->capacity / 2;
     }
 
-    sift_down(heap, 0);
+    sift_down(heap, index);
 
     return *(heap->array + heap->size);
 }
@@ -149,6 +174,13 @@ int get_max(Heap *heap) {
         return -1;
 
     return *(heap->array);
+}
+
+void heap_sort(int *array, size_t size) {
+    Heap *heap = build_heap(array, size, size);
+
+    for (int i = 0; i < size-1; i++)
+        extract_max(heap, false);
 }
 
 void logger(const char *tag, const char *message, bool _exit) {
