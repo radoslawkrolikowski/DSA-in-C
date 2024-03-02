@@ -8,7 +8,7 @@ int get_parent_index(Heap *heap, int index) {
     if (index <= 0 || index >= heap->size)
         return -1;
 
-    return (index / 2) - 1;
+    return ((index-1) / 2);
 }
 
 int get_left_child_index(Heap *heap, int index) {
@@ -59,6 +59,40 @@ void sift_down(Heap *heap, int index) {
     }
 }
 
+void sift_up(Heap *heap, int index) {
+    if (index < 0 || index >= heap->size)
+        return;
+
+    int parent = get_parent_index(heap, index);
+    if (parent == -1)
+        return;
+
+    if (*(heap->array + index) > *(heap->array + parent)) {
+        // swap parent with the greater child (binary XOR swap algorithm)
+        *(heap->array + index) ^= *(heap->array + parent);
+        *(heap->array + parent) ^= *(heap->array + index);
+        *(heap->array + index) ^= *(heap->array + parent);
+
+        // go up the tree
+        sift_up(heap, parent);
+    }
+}
+
+void insert(Heap *heap, int value) {
+    if (heap->size >= heap->capacity) {
+        int *pArray = realloc(heap->array, heap->capacity * 2);
+        if (pArray == NULL)
+            logger("[ERROR]", "could not reallocate the heap array", true);
+
+        heap->array = pArray;
+        heap->capacity = heap->capacity * 2;
+    }
+
+    *(heap->array + heap->size) = value;
+    heap->size++;
+    sift_up(heap, heap->size-1);
+}
+
 Heap* build_heap(int *array, size_t capacity, size_t size) {
     if (capacity < size)
         logger("[ERROR]", "capacity cannot be lower than the size", true);
@@ -75,6 +109,46 @@ Heap* build_heap(int *array, size_t capacity, size_t size) {
         sift_down(pHeap, i);
 
     return pHeap;
+}
+
+int extract_max(Heap *heap) {
+    if (heap->size == 0)
+        return -1;
+
+    // swap first and last element (XOR swap algorithm)
+    *(heap->array) ^= *(heap->array + heap->size-1);
+    *(heap->array + heap->size-1) ^= *(heap->array);
+    *(heap->array) ^= *(heap->array + heap->size-1);
+
+    heap->size--;
+
+    if (heap->size < heap->capacity / 4) {
+        int *pArray = realloc(heap->array, heap->capacity / 2);
+        if (pArray == NULL)
+            logger("[ERROR]", "could not reallocate the heap array", true);
+
+        heap->array = pArray;
+        heap->capacity = heap->capacity / 2;
+    }
+
+    sift_down(heap, 0);
+
+    return *(heap->array + heap->size);
+}
+
+bool is_empty(Heap *heap) {
+    return heap->size == 0;
+}
+
+size_t get_size(Heap *heap) {
+    return heap->size;
+}
+
+int get_max(Heap *heap) {
+    if (heap->size == 0)
+        return -1;
+
+    return *(heap->array);
 }
 
 void logger(const char *tag, const char *message, bool _exit) {

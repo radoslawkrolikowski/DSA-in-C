@@ -20,6 +20,29 @@ Heap* build_heap(int *array, size_t capacity, size_t size);
 // provided index.
 void sift_down(Heap *heap, int index);
 
+// sift_up function performs the sift up operation on the node at
+// provided index.
+void sift_up(Heap *heap, int index);
+
+// insert function inserts the value into the heap and
+// performs max-heapify operation
+void insert(Heap *heap, int value);
+
+// extract_max function returns and removes the maximum value.
+// If heap is empty it returns -1.
+int extract_max(Heap *heap);
+
+// is_empty function returns true if heap is empty, otherwise
+// is returns false.
+bool is_empty(Heap *heap);
+
+// get_size returns the number of elements in the heap.
+size_t get_size(Heap *heap);
+
+// get_max returns the maximum element without removing it.
+// if heap is empty it returns -1.
+int get_max(Heap *heap);
+
 // get_parent_index function returns the index of the parent node
 // if exists, otherwise it returns -1.
 int get_parent_index(Heap *heap, int index);
